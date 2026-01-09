@@ -32,6 +32,10 @@
             ::-webkit-scrollbar-track { background: #f1f1f1; }
             ::-webkit-scrollbar-thumb { background: #1a1a1a; }
         }
+        .hidden { display: none; }
+        .sidebar-open {
+    transform: translateX(0) !important;
+}
     </style>
 </head>
 <body class="page-transition">
@@ -40,43 +44,41 @@
         Free Shipping on all orders over $150
     </div>
 
-<nav class="sticky top-0 z-[100] bg-white/95 backdrop-blur-md border-b border-gray-100 py-6">
-    <div class="max-w-[1600px] mx-auto px-10 flex items-center">
+<nav class="sticky top-0 z-[100] bg-white/95 backdrop-blur-md border-b border-gray-100 py-4 md:py-6">
+    <div class="max-w-[1600px] mx-auto px-5 md:px-10 flex items-center justify-between">
         
-        <div class="text-2xl md:text-3xl font-black tracking-tighter text-red-600 cursor-pointer shrink-0" onclick="window.location.reload()">
+        <button onclick="toggleMobileMenu(true)" class="lg:hidden text-2xl p-2 -ml-2">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        
+        <div class="text-xl md:text-3xl font-black tracking-tighter text-red-600 cursor-pointer shrink-0" onclick="window.location.reload()">
             Palisols Mart
         </div>
         
-      <ul id="main-nav-links" class="hidden lg:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.1em] text-gray-500 ml-12">
-    <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="homePage(); filterByBadge('New')">New Arrivals</li>
-    <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="homePage(); filterByBadge('Premium')">Collections</li>
-    
-    <li class="hover:text-red-600 cursor-pointer transition-colors">
-        <a href="#about" onclick="homePage()">About Us</a>
-    </li>
-    
-    <li id="nav-offers" class="hover:text-red-600 cursor-pointer transition-colors font-black text-black" onclick="showOffers()">Offers</li>
-    
-    <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="toggleContactModal(true)">Contact Us</li>
-</ul>
+        <ul id="main-nav-links" class="hidden lg:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.1em] text-gray-500 ml-12">
+            <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="homePage(); filterByBadge('New')">New Arrivals</li>
+            <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="homePage(); filterByBadge('Premium')">Collections</li>
+            <li class="hover:text-red-600 cursor-pointer transition-colors"><a href="#about" onclick="homePage()">About Us</a></li>
+            <li id="nav-offers" class="hover:text-red-600 cursor-pointer transition-colors font-black text-black" onclick="showOffers()">Offers</li>
+            <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="toggleContactModal(true)">Contact Us</li>
+        </ul>
 
-        <div class="flex items-center gap-8 ml-auto">
+        <div class="flex items-center gap-3 md:gap-8 ml-auto">
             <div class="relative hidden sm:flex items-center">
                 <input type="text" id="productSearch" onkeyup="handleSearch()" placeholder="Search..." 
-                       class="border-b-2 border-gray-200 py-1 pr-10 text-[15px] focus:outline-none focus:border-red-600 transition-all w-44 lg:w-60 bg-transparent placeholder:text-gray-300">
+                       class="border-b-2 border-gray-200 py-1 pr-10 text-[15px] focus:outline-none focus:border-red-600 transition-all w-32 lg:w-60 bg-transparent placeholder:text-gray-300">
                 <i class="fa-solid fa-magnifying-glass text-sm absolute right-2 text-gray-400"></i>
             </div>
 
-            <div class="flex items-center gap-6">
-                <i class="fa-regular fa-user text-2xl cursor-pointer hover:text-red-600 transition" onclick="toggleAuthModal(true)"></i>
+            <div class="flex items-center gap-4 md:gap-6">
+                <i class="fa-regular fa-user text-xl md:text-2xl cursor-pointer hover:text-red-600 transition" onclick="toggleAuthModal(true)"></i>
                 
                 <div class="relative cursor-pointer group" onclick="toggleCart(true)">
-                    <i class="fa-solid fa-bag-shopping text-2xl group-hover:text-red-600 transition"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span>
+                    <i class="fa-solid fa-bag-shopping text-xl md:text-2xl group-hover:text-red-600 transition"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">0</span>
                 </div>
             </div>
         </div>
-        
     </div>
 </nav>
 
@@ -90,6 +92,7 @@
             <p onclick="filterByBadge('New'); toggleMobileMenu(false)">New Arrivals</p>
             <p onclick="filterByBadge('Premium'); toggleMobileMenu(false)">Collections</p>
             <p onclick="filterByBadge('Premium'); toggleMobileMenu(false)">About Us</p>
+            
             <p class="text-red-600" onclick="toggleContactModal(true); toggleMobileMenu(false)">Contact Us</p>
             <div class="pt-6 border-t border-gray-100">
                 <p class="text-[10px] text-gray-400 mb-4">Categories</p>
@@ -306,7 +309,7 @@
                         Palisols Mart
                     </h3>
                     <p class="text-gray-500 text-base leading-relaxed">
-                        We are a trusted online mart serving thousands of customers daily. Since 2018, we have built a community based on reliable products and fast reach.
+                        We are a trusted online mart serving thousands of customers daily.We have built a community based on reliable products and fast reach.
                     </p>
                 </div>
 
@@ -324,7 +327,7 @@
 
                 <div class="flex items-center gap-8 pt-4">
                     <div>
-                        <p class="text-2xl font-black text-black">25k+</p>
+                        <p class="text-2xl font-black text-black">2k+</p>
                         <p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest">Customers</p>
                     </div>
                     
@@ -447,7 +450,9 @@
                 <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Total</span>
                 <span id="cart-total" class="text-xl font-black">$0.00</span>
             </div>
-            <button class="w-full bg-black text-white py-5 font-bold uppercase tracking-widest hover:bg-red-600 transition">Checkout</button>
+           <button onclick="openCheckout()" class="w-full bg-black text-white py-5 font-bold uppercase tracking-widest hover:bg-red-600 transition">
+    Proceed to Checkout
+</button>
         </div>
     </div>
 
@@ -455,17 +460,49 @@
         <i class="fa-solid fa-circle-check text-green-500 mr-2"></i> Added to bag
     </div>
 
-    <div id="authModal" class="fixed inset-0 z-[500] modal-bg flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md p-8 rounded-sm shadow-2xl relative">
-            <button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 text-2xl hover:text-red-600">&times;</button>
-            <h2 class="text-xl font-black tracking-tighter uppercase mb-6">Account Login</h2>
-            <form onsubmit="event.preventDefault(); toggleAuthModal(false);" class="space-y-4">
-                <input type="email" placeholder="Email" required class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-red-600">
-                <input type="password" placeholder="Password" required class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-red-600">
+   <div id="authModal" class="fixed inset-0 z-[500] modal-bg flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md p-8 md:p-10 relative shadow-2xl">
+        <button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 text-2xl hover:text-red-600">&times;</button>
+        
+        <div id="login-view">
+            <h2 class="text-2xl font-black tracking-tighter uppercase mb-2">Account Login</h2>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6">Welcome back to Palisols</p>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <input type="email" placeholder="EMAIL" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 font-bold uppercase tracking-widest">
+                <input type="password" placeholder="PASSWORD" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 font-bold uppercase tracking-widest">
                 <button type="submit" class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-red-600 transition">Sign In</button>
             </form>
+            <p class="mt-6 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Don't have an account? <span onclick="switchAuthView('signup')" class="text-red-600 cursor-pointer hover:underline">Sign Up</span>
+            </p>
+        </div>
+
+        <div id="signup-view" class="hidden">
+            <h2 class="text-2xl font-black tracking-tighter uppercase mb-2">Create Account</h2>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6">Join the Palisols Community</p>
+            <form onsubmit="handleSignUp(event)" class="space-y-4">
+                <input type="text" placeholder="FULL NAME" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 font-bold uppercase tracking-widest">
+                <input type="email" placeholder="EMAIL ADDRESS" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 font-bold uppercase tracking-widest">
+                <input type="password" placeholder="CREATE PASSWORD" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 font-bold uppercase tracking-widest">
+                <button type="submit" class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-red-600 transition">Create Account</button>
+            </form>
+            <p class="mt-6 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Already a member? <span onclick="switchAuthView('login')" class="text-red-600 cursor-pointer hover:underline">Log In</span>
+            </p>
+        </div>
+
+        <div id="auth-success-view" class="hidden text-center py-6">
+            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-envelope-open-text text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-black uppercase tracking-tighter mb-2">Verify Your Email</h2>
+            <p class="text-gray-500 text-xs font-bold uppercase tracking-widest leading-relaxed mb-8">
+                We've sent a confirmation link to your inbox. Please check your email to activate your account.
+            </p>
+            <button onclick="toggleAuthModal(false)" class="bg-black text-white px-8 py-3 font-bold uppercase tracking-widest text-[10px]">Close</button>
         </div>
     </div>
+</div>
 
     <script>
         const products = [
@@ -528,9 +565,14 @@
         }
         // -----------------------------
 
-        function toggleMobileMenu(open) {
-            document.getElementById('mobileMenu').classList.toggle('sidebar-open', open);
-        }
+       function toggleMobileMenu(isOpen) {
+    const menu = document.getElementById('mobileMenu');
+    if (isOpen) {
+        menu.classList.add('sidebar-open');
+    } else {
+        menu.classList.remove('sidebar-open');
+    }
+}
 
         function openProductModal(name) {
             const product = products.find(p => p.name === name);
@@ -615,7 +657,7 @@
             const modal = document.getElementById('authModal');
             show ? modal.classList.add('modal-active') : modal.classList.remove('modal-active');
         }
-
+ 
         function showToast() {
             const toast = document.getElementById('toast');
             toast.style.transform = "translateY(0) translateX(-50%)";
@@ -747,6 +789,184 @@ function renderOffers() {
         </div>
     `).join('');
 }
-    </script>
+function togglePaymentFields(type) {
+    // Hide all extra fields first
+    document.getElementById('card-fields').classList.add('hidden');
+    document.getElementById('paypal-fields').classList.add('hidden');
+
+    // Show the selected one
+    if (type === 'card') {
+        document.getElementById('card-fields').classList.remove('hidden');
+    } else if (type === 'paypal') {
+        document.getElementById('paypal-fields').classList.remove('hidden');
+    }
+}
+
+function openCheckout() {
+    if (cart.length === 0) {
+        alert("Your bag is empty!");
+        return;
+    }
+
+    // Calculate Total with Shipping
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const shipping = 15.00;
+    const finalTotal = subtotal + shipping;
+
+    // Update UI
+    document.getElementById('checkout-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+    document.getElementById('checkout-total-display').innerText = `Total Amount (Inc. Shipping): $${finalTotal.toFixed(2)}`;
+    
+    toggleCart(false);
+    document.getElementById('checkoutModal').classList.add('modal-active');
+}
+function closeCheckout() {
+    document.getElementById('checkoutModal').classList.remove('modal-active');
+}
+
+function handleOrderSubmit(event) {
+    event.preventDefault();
+    
+    // Show loading state (optional)
+    const btn = event.target.querySelector('button');
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+
+    setTimeout(() => {
+        // Hide form, show success message
+        document.getElementById('checkout-form-container').classList.add('hidden');
+        document.getElementById('order-success-container').classList.remove('hidden');
+        
+        // Clear the cart
+        cart = [];
+        updateCart(); 
+    }, 1500);
+}
+let isLoggedIn = false;
+
+function switchAuthView(view) {
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('signup-view').classList.add('hidden');
+    document.getElementById('auth-success-view').classList.add('hidden');
+
+    if (view === 'login') document.getElementById('login-view').classList.remove('hidden');
+    if (view === 'signup') document.getElementById('signup-view').classList.remove('hidden');
+    if (view === 'success') document.getElementById('auth-success-view').classList.remove('hidden');
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    isLoggedIn = true;
+    alert("Logged in successfully!");
+    toggleAuthModal(false);
+    updateUserIcon(); // Update UI to show we are logged in
+}
+
+function handleSignUp(e) {
+    e.preventDefault();
+    // Simulate sending email
+    switchAuthView('success');
+}
+
+function handleSignOut() {
+    isLoggedIn = false;
+    alert("Signed out successfully!");
+    location.reload(); // Simplest way to reset the UI
+}
+
+function updateUserIcon() {
+    // This could change the user icon to a "Sign Out" button or show a name
+    const userIcon = document.querySelector('.fa-user').parentElement;
+    if(isLoggedIn) {
+        userIcon.innerHTML = `<span onclick="handleSignOut()" class="text-[10px] font-black uppercase cursor-pointer hover:text-red-600">Sign Out</span>`;
+    }
+}
+</script>
+<div id="checkoutModal" class="fixed inset-0 z-[700] modal-bg flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 md:p-12 relative shadow-2xl">
+        <button onclick="closeCheckout()" class="absolute top-4 right-4 text-2xl hover:text-red-600">&times;</button>
+        
+        <div id="checkout-form-container">
+            <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Secure Checkout</h2>
+            <p id="checkout-total-display" class="text-red-600 text-sm font-bold uppercase tracking-widest mb-8">Total Amount: $0.00</p>
+            
+            <form onsubmit="handleOrderSubmit(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold uppercase text-gray-400 mb-1 block">Full Name</label>
+                        <input type="text" required class="w-full border border-gray-200 p-3 text-xs focus:border-red-600 outline-none uppercase font-bold">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold uppercase text-gray-400 mb-1 block">Phone Number</label>
+                        <input type="tel" required class="w-full border border-gray-200 p-3 text-xs focus:border-red-600 outline-none uppercase font-bold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold uppercase text-gray-400 mb-1 block">Shipping Address</label>
+                    <textarea required rows="2" class="w-full border border-gray-200 p-3 text-xs focus:border-red-600 outline-none uppercase font-bold"></textarea>
+                </div>
+
+           <div>
+    <label class="text-[10px] font-bold uppercase text-gray-400 mb-3 block">Select Payment Method</label>
+    <div class="grid grid-cols-1 gap-3">
+       
+        <label class="flex items-center p-4 border border-gray-200 cursor-pointer hover:bg-gray-50 transition">
+            <input type="radio" name="payment" value="online" onclick="togglePaymentFields('card')" class="accent-red-600">
+            <span class="ml-3 text-[11px] font-black uppercase tracking-widest">Credit / Debit Card</span>
+            <i class="fa-solid fa-credit-card ml-auto text-gray-400"></i>
+        </label>
+        <div id="card-fields" class="hidden p-4 bg-gray-50 border-x border-b border-gray-200 space-y-3">
+            <input type="text" placeholder="Card Number (16 Digits)" class="w-full p-2 text-xs border border-gray-300 outline-none focus:border-red-600 uppercase font-bold">
+            <div class="flex gap-2">
+                <input type="text" placeholder="MM/YY" class="w-1/2 p-2 text-xs border border-gray-300 outline-none focus:border-red-600">
+                <input type="text" placeholder="CVV" class="w-1/2 p-2 text-xs border border-gray-300 outline-none focus:border-red-600">
+            </div>
+        </div>
+
+        <label class="flex items-center p-4 border border-gray-200 cursor-pointer hover:bg-gray-50 transition">
+            <input type="radio" name="payment" value="paypal" onclick="togglePaymentFields('paypal')" class="accent-red-600">
+            <span class="ml-3 text-[11px] font-black uppercase tracking-widest">PayPal</span>
+            <i class="fa-brands fa-paypal ml-auto text-blue-600"></i>
+        </label>
+        <div id="paypal-fields" class="hidden p-4 bg-gray-50 border-x border-b border-gray-200 text-center">
+            <button type="button" class="bg-[#ffc439] text-blue-900 px-6 py-2 rounded-full font-bold text-xs italic">
+                <i>Pay with</i> <span class="font-black">PayPal</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="mt-6 pt-4 border-t border-dashed border-gray-200 space-y-2">
+    <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest text-gray-500">
+        <span>Subtotal</span>
+        <span id="checkout-subtotal">$0.00</span>
+    </div>
+    <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest text-gray-500">
+        <span>Shipping Fee</span>
+        <span>$15.00</span>
+    </div>
+</div>
+
+                <button type="submit" class="w-full bg-black text-white py-5 font-bold uppercase tracking-[0.2em] hover:bg-red-600 transition shadow-xl">
+                    Confirm Order
+                </button>
+            </form>
+        </div>
+
+        <div id="order-success-container" class="hidden text-center py-12">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-check text-3xl"></i>
+            </div>
+            <h2 class="text-3xl font-black uppercase tracking-tighter mb-2">Order Confirmed!</h2>
+            <p class="text-gray-500 text-xs uppercase tracking-widest mb-8 font-bold leading-relaxed">
+                Thank you for shopping at Palisols.<br>Your order <span class="text-black"></span> is being processed.
+            </p>
+            <button onclick="location.reload()" class="bg-black text-white px-10 py-4 font-bold uppercase tracking-widest text-[10px] hover:bg-red-600 transition">
+                Return to Home
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
