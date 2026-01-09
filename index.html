@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fff; color: #1a1a1a; overflow-x: hidden; scroll-behavior: smooth; }
+        
+        .page-transition { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .product-card img { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        @media (hover: hover) {
+            .product-card:hover img { transform: scale(1.08); }
+        }
+        
+        .cart-sidebar, .mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-open { transform: translateX(0) !important; }
+        
+        .badge { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .modal-bg { background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: none !important; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-active { display: flex !important; opacity: 1; }
+
+        @media (min-width: 1024px) {
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-track { background: #f1f1f1; }
+            ::-webkit-scrollbar-thumb { background: #1a1a1a; }
+        }
+    </style>
+</head>
+<body class="page-transition">
+
+    <div class="bg-black text-white text-[10px] md:text-[11px] py-2 text-center font-bold tracking-[0.2em] uppercase px-4">
+        Free Shipping on all orders over $150
+    </div>
+
+<nav class="sticky top-0 z-[100] bg-white/95 backdrop-blur-md border-b border-gray-100 py-6">
+    <div class="max-w-[1600px] mx-auto px-10 flex items-center">
+        
+        <div class="text-2xl md:text-3xl font-black tracking-tighter text-red-600 cursor-pointer shrink-0" onclick="window.location.reload()">
+            Palisols Mart
+        </div>
+        
+      <ul id="main-nav-links" class="hidden lg:flex items-center gap-8 text-[13px] font-bold uppercase tracking-[0.1em] text-gray-500 ml-12">
+    <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="homePage(); filterByBadge('New')">New Arrivals</li>
+    <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="homePage(); filterByBadge('Premium')">Collections</li>
+    
+    <li class="hover:text-red-600 cursor-pointer transition-colors">
+        <a href="#about" onclick="homePage()">About Us</a>
+    </li>
+    
+    <li id="nav-offers" class="hover:text-red-600 cursor-pointer transition-colors font-black text-black" onclick="showOffers()">Offers</li>
+    
+    <li class="hover:text-red-600 cursor-pointer transition-colors" onclick="toggleContactModal(true)">Contact Us</li>
+</ul>
+
+        <div class="flex items-center gap-8 ml-auto">
+            <div class="relative hidden sm:flex items-center">
+                <input type="text" id="productSearch" onkeyup="handleSearch()" placeholder="Search..." 
+                       class="border-b-2 border-gray-200 py-1 pr-10 text-[15px] focus:outline-none focus:border-red-600 transition-all w-44 lg:w-60 bg-transparent placeholder:text-gray-300">
+                <i class="fa-solid fa-magnifying-glass text-sm absolute right-2 text-gray-400"></i>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <i class="fa-regular fa-user text-2xl cursor-pointer hover:text-red-600 transition" onclick="toggleAuthModal(true)"></i>
+                
+                <div class="relative cursor-pointer group" onclick="toggleCart(true)">
+                    <i class="fa-solid fa-bag-shopping text-2xl group-hover:text-red-600 transition"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">0</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</nav>
+
+    <div id="mobileMenu" class="fixed inset-y-0 left-0 w-full max-w-xs bg-white shadow-2xl z-[200] mobile-menu transform -translate-x-full flex flex-col">
+        <div class="p-6 border-b flex justify-between items-center">
+            <span class="font-black tracking-tighter text-red-600">MENU</span>
+            <button onclick="toggleMobileMenu(false)" class="text-2xl">&times;</button>
+        </div>
+        <div class="p-8 space-y-6 font-bold uppercase tracking-widest text-sm text-gray-700">
+            <p onclick="renderProducts(products, 'Shop All'); toggleMobileMenu(false)">Shop All</p>
+            <p onclick="filterByBadge('New'); toggleMobileMenu(false)">New Arrivals</p>
+            <p onclick="filterByBadge('Premium'); toggleMobileMenu(false)">Collections</p>
+            <p onclick="filterByBadge('Premium'); toggleMobileMenu(false)">About Us</p>
+            <p class="text-red-600" onclick="toggleContactModal(true); toggleMobileMenu(false)">Contact Us</p>
+            <div class="pt-6 border-t border-gray-100">
+                <p class="text-[10px] text-gray-400 mb-4">Categories</p>
+                <p class="mb-4" onclick="filterByCat('Appliances'); toggleMobileMenu(false)">Appliances</p>
+                <p class="mb-4" onclick="filterByCat('Sports'); toggleMobileMenu(false)">Sports</p>
+                <p class="mb-4" onclick="filterByCat('Skincare'); toggleMobileMenu(false)">Skincare</p>
+                <p class="mb-4" onclick="filterByCat(' Pre-Owned'); toggleMobileMenu(false)"> Pre-Owned</p>
+               
+            </div>
+        </div>
+    </div>
+
+   <div id="contactModal" class="fixed inset-0 z-[600] modal-bg flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg p-8 md:p-12 relative shadow-2xl">
+        <button onclick="toggleContactModal(false)" class="absolute top-4 right-4 text-2xl hover:text-red-600">&times;</button>
+        
+        <div id="contact-form-container">
+           <h2 class="text-3xl font-black tracking-tighter uppercase mb-2">Get  in  Touch</h2>
+                <p class="text-gray-500 text-xs uppercase tracking-widest mb-8 font-bold">We usually respond within 24 hours.</p>
+           
+            
+            <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1 block">Full Name</label>
+                    <input type="text" placeholder="Enter your full name" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 uppercase font-bold tracking-widest">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1 block">Email Address</label>
+                    <input type="email" placeholder="email@domain.com" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 uppercase font-bold tracking-widest">
+                </div>
+
+<div>
+    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1 block">
+        Contact Number
+    </label>
+
+    <div class="relative">
+        <!-- Country Code -->
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
+            +61
+        </span>
+
+        <!-- Phone Input -->
+        <input
+            type="tel"
+            placeholder="4XXXXXXXX"
+            pattern="[0-9]{9}"
+            title="Enter a valid Australian mobile number (9 digits)"
+            required
+            class="w-full border border-gray-200 p-4 pl-14 text-xs focus:outline-none focus:border-red-600 uppercase font-bold tracking-widest"
+        >
+    </div>
+
+    <p class="text-[9px] text-gray-400 mt-1 uppercase">
+        Australia format: +61 4XXXXXXXX
+    </p>
+</div>
+
+
+                <div>
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1 block">Message</label>
+                    <textarea placeholder="How can we help you?" rows="3" required class="w-full border border-gray-200 p-4 text-xs focus:outline-none focus:border-red-600 uppercase font-bold tracking-widest"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-black text-white py-5 font-bold uppercase tracking-[0.2em] hover:bg-red-600 transition shadow-xl mt-4">Send Message</button>
+            </form>
+        </div>
+
+        <div id="contact-success" class="hidden text-center py-12">
+            <i class="fa-solid fa-check-circle text-5xl text-green-500 mb-6"></i>
+            <h2 class="text-2xl font-black uppercase mb-2">Verified</h2>
+            <p class="text-gray-500 text-sm mb-8 uppercase tracking-widest font-bold">Our team will contact you shortly.</p>
+            <button onclick="toggleContactModal(false)" class="bg-black text-white px-8 py-3 font-bold uppercase tracking-widest">Close</button>
+        </div>
+    </div>
+</div>
+
+<header id="hero-section" class="relative h-[75vh] md:h-[85vh] flex items-center overflow-hidden bg-gray-100">
+    
+    <div class="absolute inset-0 z-0">
+        <img src="images/image25.png" class="w-full h-full object-cover" alt="Hero Background">
+        <div class="absolute inset-0 bg-black/5"></div>
+    </div>
+
+    <div class="relative z-10 max-w-[1500px] mx-auto px-6 md:px-12 w-full flex justify-start">
+        
+        <div class="w-full max-w-2xl ml-0 md:ml-16 bg-white/25 backdrop-blur-2xl border border-white/40 p-10 md:p-14 rounded-[2.5rem] shadow-2xl transition-all duration-500">
+            
+            <div class="max-w-md"> 
+                <span class="text-red-600 font-black uppercase tracking-[0.4em] text-[10px] md:text-xs mb-5 block">
+                    2026 Collection
+                </span>
+
+                <h1 class="text-3xl md:text-5xl font-black tracking-tighter uppercase leading-[1.05] text-gray-900 mb-5">
+                    Everything <br> 
+                    You Need. <br>
+                    <span class="text-transparent" style="-webkit-text-stroke: 1px #111827;">All In One Place.</span>
+                </h1>
+
+                <p class="text-gray-600 font-bold uppercase tracking-[0.15em] text-[10px] md:text-[11px] leading-relaxed mb-10 border-l-2 border-red-600 pl-4">
+                    A trusted community mart delivering best Products.
+                </p>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="document.getElementById('main-content-area').scrollIntoView({behavior: 'smooth'})" 
+                            class="bg-black text-white px-8 py-4 font-black uppercase text-[10px] tracking-[0.2em] hover:bg-red-600 transition-all shadow-xl hover:-translate-y-1">
+                        Explore Mart
+                    </button>
+                    
+                    <button onclick="showOffers()" 
+                            class="bg-white/60 backdrop-blur-md text-black border border-white/50 px-8 py-4 font-black uppercase text-[10px] tracking-[0.2em] hover:bg-black hover:text-white transition-all shadow-md">
+                        View Deals
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</header>
+<section id="category-section" class="py-8 md:py-12 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between lg:justify-center gap-6 md:gap-10 overflow-x-auto hide-scrollbar">
+        <div class="flex flex-col items-center gap-3 cursor-pointer group min-w-[100px]" onclick="filterByCat('Appliances')">
+            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-50 transition border border-gray-100">
+                <i class="fa-solid fa-house-laptop text-xl md:text-2xl text-blue-900"></i>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-blue-900">Appliances</span>
+        </div>
+        
+        <div class="flex flex-col items-center gap-3 cursor-pointer group min-w-[100px]" onclick="filterByCat('Pre-owned')">
+            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-50 transition border border-gray-100">
+                <i class="fa-solid fa-box-archive text-xl md:text-2xl text-blue-900"></i>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-blue-900">Pre-Owned</span>
+        </div>
+
+        <div class="flex flex-col items-center gap-3 cursor-pointer group min-w-[100px]" onclick="filterByCat('Skincare')">
+            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-50 transition border border-gray-100">
+                <i class="fa-solid fa-pump-soap text-xl md:text-2xl text-blue-900"></i>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-blue-900">Skincare</span>
+        </div>
+
+        <div class="flex flex-col items-center gap-3 cursor-pointer group min-w-[100px]" onclick="filterByCat('Sports')">
+            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-50 transition border border-gray-100">
+                <i class="fa-solid fa-baseball-bat-ball text-xl md:text-2xl text-blue-900"></i>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-blue-900">Sports</span>
+        </div>
+    </div>
+</section>
+
+<section>
+    <main id="main-content-area" class="max-w-7xl mx-auto py-12 md:py-20 px-4 md:px-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+            <div>
+                <h2 id="section-title" class="text-2xl md:text-3xl font-black tracking-tighter uppercase">Featured Products</h2>
+                <div class="h-1 w-20 bg-red-600 mt-2"></div>
+            </div>
+            <button onclick="renderProducts(products, 'All Products')" class="text-xs font-bold border-b-2 border-black pb-1 hover:text-red-600 hover:border-red-600 transition">View All Products</button>
+        </div>
+        <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-10 md:gap-y-12"></div>
+    </main>
+
+  </section>
+<section id="offers-screen" class="hidden min-h-screen bg-gray-50 py-12 md:py-20 px-4 md:px-12">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 border-b border-gray-200 pb-8">
+            <div>
+                <span class="text-red-600 font-black uppercase tracking-[0.3em] text-xs">Exclusive Deals</span>
+                <h2 class="text-4xl md:text-5xl font-black tracking-tighter uppercase">Current Offers</h2>
+            </div>
+            <button onclick="closeOffers()" class="mt-4 md:mt-0 bg-black text-white px-8 py-3 font-bold uppercase tracking-widest hover:bg-red-600 transition">
+                Back to Shop
+            </button>
+        </div>
+        
+        <div id="offers-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-10 md:gap-y-12">
+            </div>
+
+        <div class="mt-20 bg-red-600 p-8 md:p-16 text-white text-center rounded-sm shadow-2xl">
+            <h3 class="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tighter">Flash Sale: Extra 20% Off</h3>
+            <p class="text-white/80 uppercase tracking-[0.2em] font-bold text-xs md:text-sm mb-8">Use Code: palisols55 at checkout</p>
+        </div>
+    </div>
+</section>
+<section id="about" class="py-16 md:py-24 bg-white text-gray-900">
+    <div class="max-w-6xl mx-auto px-6">
+        
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-2 h-2 bg-red-600"></div>
+                <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Company Profile</span>
+            </div>
+            <h2 class="text-3xl font-black uppercase tracking-tighter border-b border-gray-100 pb-4">
+                About <span class="text-red-600">Us</span>
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <div class="relative">
+                <img src="images/image22.png" 
+                     class="rounded-xl w-full h-[400px] object-cover" 
+                     alt="Palisols Mart Store">
+                <div class="absolute top-4 left-4 bg-black text-white px-3 py-1 rounded text-[9px] font-bold uppercase tracking-widest">
+                    Verified Mart
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-2xl font-black uppercase mb-4">
+                        Palisols Mart
+                    </h3>
+                    <p class="text-gray-500 text-base leading-relaxed">
+                        We are a trusted online mart serving thousands of customers daily. Since 2018, we have built a community based on reliable products and fast reach.
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="border-l border-gray-200 pl-4">
+                        <p class="text-gray-600 italic text-sm">"Palisols is the only place I trust for my online shopping. Their reach is amazing and the quality is always consistent."</p>
+                        <p class="text-[10px] font-bold uppercase mt-1 text-gray-400">— Sarah J.</p>
+                    </div>
+
+                    <div class="border-l border-gray-200 pl-4">
+                        <p class="text-gray-600 italic text-sm">"A very simple and honest mart. I've been a regular customer for 3 years now. Highly recommended!"</p>
+                        <p class="text-[10px] font-bold uppercase mt-1 text-gray-400">— Mike Ross</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-8 pt-4">
+                    <div>
+                        <p class="text-2xl font-black text-black">25k+</p>
+                        <p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest">Customers</p>
+                    </div>
+                    
+                    <a href="#products-section" class="bg-black text-white px-8 py-3 font-bold uppercase text-[10px] tracking-[0.2em] hover:bg-red-600 transition-all inline-block">
+                        Visit Shop
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Smooth scroll for the Visit Shop link */
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+<footer class="bg-white pt-20 pb-10 border-t border-gray-100 text-gray-900">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
+        
+        <div class="flex flex-col items-center md:items-start">
+            <div class="text-2xl font-black tracking-tighter text-red-600 mb-4">Palisols</div>
+            <p class="text-gray-500 text-xs leading-relaxed max-w-xs">
+                Providing high-performance tools for your daily expedition.
+            </p>
+        </div>
+
+        <div>
+           
+            <ul class="text-gray-500 text-xs space-y-4">
+                <li>
+                    <a href="mailto:hello@palisols.com" class="hover:text-red-600 transition flex items-center justify-center md:justify-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <span>Furqan@palisols.com.au</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="tel:+15551234567" class="hover:text-red-600 transition flex items-center justify-center md:justify-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span>+61 424674448</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-[10px] uppercase tracking-[0.2em] mb-6 text-black">Follow the Tribe</h4>
+            <div class="flex justify-center md:justify-start gap-5 text-gray-400">
+                <a href="#" class="hover:text-red-600 transition" aria-label="Instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                </a>
+                <a href="#" class="hover:text-blue-600 transition" aria-label="Facebook">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </a>
+                <a href="#" class="hover:text-black transition" aria-label="Twitter">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+                </a>
+                <a href="#" class="hover:text-red-700 transition" aria-label="Youtube">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 2-2 69.04 69.04 0 0 1 15 0 2 2 0 0 1 2 2 24.12 24.12 0 0 1 0 10 2 2 0 0 1-2 2 69.04 69.04 0 0 1-15 0 2 2 0 0 1-2-2Z"/><polyline points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-[10px] uppercase tracking-[0.2em] mb-6 text-black">Newsletter</h4>
+            <div class="flex gap-2 max-w-sm mx-auto md:mx-0">
+                <input type="email" placeholder="Your Email" class="bg-gray-50 border border-gray-200 px-4 py-2 w-full text-xs focus:outline-none focus:ring-1 focus:ring-red-600">
+                <button class="bg-black text-white px-4 py-2 text-xs font-bold uppercase hover:bg-red-600 transition">Join</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-gray-100 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+        © 2026 Palisols. Built with precision.
+    </div>
+</footer>
+
+        
+    <div id="productModal" class="fixed inset-0 z-[600] modal-bg flex items-center justify-center p-0 md:p-4">
+        <div class="bg-white w-full h-full md:h-auto md:max-w-4xl md:max-h-[90vh] overflow-y-auto relative flex flex-col md:flex-row">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-3xl z-10 hover:text-red-600 bg-white/80 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">&times;</button>
+            <div class="w-full md:w-1/2 bg-gray-100 h-2/3 md:h-auto">
+                <img id="modal-img" src="" class="w-full h-full object-cover">
+            </div>
+            <div class="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center bg-white">
+                <p id="modal-cat" class="text-[10px] font-bold text-red-600 uppercase tracking-widest mb-2"></p>
+                <h2 id="modal-name" class="text-2xl md:text-3xl font-black tracking-tighter uppercase mb-4"></h2>
+                <p id="modal-price" class="text-xl md:text-2xl font-black mb-6 text-gray-900"></p>
+                <div class="flex items-center gap-4 mb-8">
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Qty</span>
+                    <div class="flex border border-gray-200">
+                        <button onclick="updateModalQty(-1)" class="px-4 py-2 hover:bg-gray-100">-</button>
+                        <input type="number" id="modal-qty" value="1" min="1" class="w-12 text-center border-x border-gray-200 focus:outline-none text-sm">
+                        <button onclick="updateModalQty(1)" class="px-4 py-2 hover:bg-gray-100">+</button>
+                    </div>
+                </div>
+                <button id="modal-add-btn" class="w-full bg-black text-white py-4 md:py-5 font-bold uppercase tracking-widest hover:bg-red-600 transition shadow-xl">
+                    Add to Bag
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cartSidebar" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[200] cart-sidebar transform translate-x-full border-l border-gray-100 flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="text-sm font-black tracking-widest uppercase">Shopping Bag</h2>
+            <button onclick="toggleCart(false)" class="text-2xl hover:text-red-600 transition">&times;</button>
+        </div>
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
+        <div class="p-6 bg-gray-50 border-t border-gray-100">
+            <div class="flex justify-between items-center mb-6">
+                <span class="font-bold text-gray-400 uppercase text-[10px] tracking-widest">Total</span>
+                <span id="cart-total" class="text-xl font-black">$0.00</span>
+            </div>
+            <button class="w-full bg-black text-white py-5 font-bold uppercase tracking-widest hover:bg-red-600 transition">Checkout</button>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 md:left-auto md:right-10 md:translate-x-0 bg-black text-white px-8 py-4 rounded shadow-2xl transform translate-y-32 transition-transform duration-500 z-[700] font-bold text-[10px] uppercase tracking-widest whitespace-nowrap">
+        <i class="fa-solid fa-circle-check text-green-500 mr-2"></i> Added to bag
+    </div>
+
+    <div id="authModal" class="fixed inset-0 z-[500] modal-bg flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md p-8 rounded-sm shadow-2xl relative">
+            <button onclick="toggleAuthModal(false)" class="absolute top-4 right-4 text-2xl hover:text-red-600">&times;</button>
+            <h2 class="text-xl font-black tracking-tighter uppercase mb-6">Account Login</h2>
+            <form onsubmit="event.preventDefault(); toggleAuthModal(false);" class="space-y-4">
+                <input type="email" placeholder="Email" required class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-red-600">
+                <input type="password" placeholder="Password" required class="w-full border border-gray-200 p-3 text-sm focus:outline-none focus:border-red-600">
+                <button type="submit" class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-red-600 transition">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { name: "Black Purification Elements Water Filter", price: 58.00, cat: "Appliances", badge: "Best Seller", img: "images/image8.png" },
+            { name: "GE RPWFE Genuine Refrigerator Water Filter", price: 15.99, cat: "Appliances", badge: "Limited", img: "images/image7.png" },
+            { name: "8x Packs Black W2 for Philips Sonicare DiamondClean Toothbrush Heads", price: 15.99, cat: "Pre-owned", badge: "New", img: "images/image11.png" },
+             { name: "LANCOME Absolue Nuit Premium Bx Rejuvenating Night Cream 2.6 oz", price: 49.99, cat: "Skincare", badge: "New", img: "images/image18.png" },
+            { name: "Celimax Dual Barrier Skin Wearable Cream 50ml", price: 12.99, cat: "Skincare", badge: "New", img: "images/image19.png" },
+            { name: "Gerber StrongArm Knife, Coyote Brown Serrated Fixed Blade", price: 12.99, cat: "Pre-owned", badge: "New", img: "images/image13.png" },
+            { name: "LOUIS VUITTON IMAGINATION EDP MENS COLOGNE – 3.4OZ/100ml", price: 69.99, cat: "Pre-owned", badge: "Premium", img: "images/image14.png" },
+            { name: "Bearista BEAR Glass Jar Cold Cup Tumbler with Straw", price: 34.99, cat: "Pre-owned", badge: "Staff Pick", img: "images/image12.png" },
+            { name: "WILSON Evolution Indoor Game Basketballs", price: 21.99, cat: "Sports", badge: "Sale", img: "images/image20.png" },
+            { name: "Oral B Cross Action Electric Toothbrush Replacement Brush Heads Refill, 4Count", price: 159.00, cat: "Pre-owned", badge: "Hot", img: "images/image16.png" },
+            { name: "Whirlpool Refrigerator Water Filter A", price: 20.99, cat: "Appliances", img: "images/image10.png", badge: "Premium" },
+            { name: "La Mer The Rejuvenating Night Cream 2 fl. oz/60ml", price: 15.99, cat: "Skincare", badge: "Best Seller", img: "images/image17.png" },
+            { name: "Joola Ben Johns PERSEUS CFS 16mm Carbon Pickleball Paddle", price: 9.99, cat: "Pre-owned", badge: "Premium", img: "images/image15.png" },
+            { name: "Whirlpool Ice and Water Refrigerator Filter 4", price: 29.99, cat: "Appliances", img: "images/image9.png", badge: "Premium" },
+            { name: "Tennis Equipment", price: 29.99, cat: "Sports", img: "images/image21.png", badge: "New" }
+        ];
+
+        let cart = [];
+
+        function renderProducts(items, title) {
+            const grid = document.getElementById('product-grid');
+            const titleElem = document.getElementById('section-title');
+            if(titleElem) titleElem.innerText = title;
+            grid.innerHTML = items.map(p => `
+                <div class="product-card group cursor-pointer" onclick="openProductModal('${p.name}')">
+                    <div class="relative overflow-hidden bg-gray-50 aspect-[4/5] rounded-sm mb-4 md:mb-5">
+                        <img src="${p.img}" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 md:top-4 md:left-4 badge ${p.badge === 'Sale' ? 'bg-red-600 text-white' : 'bg-black text-white'}">${p.badge}</span>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1">${p.cat}</p>
+                        <h3 class="font-bold text-[12px] md:text-sm uppercase tracking-tight mb-1 md:mb-2 line-clamp-1">${p.name}</h3>
+                        <p class="font-black text-red-600 text-sm md:text-base">$${p.price.toFixed(2)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- NEW CONTACT FUNCTIONS ---
+        function toggleContactModal(show) {
+            const modal = document.getElementById('contactModal');
+            if(show) {
+                modal.classList.add('modal-active');
+                document.getElementById('contact-form-container').classList.remove('hidden');
+                document.getElementById('contact-success').classList.add('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.remove('modal-active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            document.getElementById('contact-form-container').classList.add('hidden');
+            document.getElementById('contact-success').classList.remove('hidden');
+        }
+        // -----------------------------
+
+        function toggleMobileMenu(open) {
+            document.getElementById('mobileMenu').classList.toggle('sidebar-open', open);
+        }
+
+        function openProductModal(name) {
+            const product = products.find(p => p.name === name);
+            if(!product) return;
+            document.getElementById('modal-img').src = product.img;
+            document.getElementById('modal-name').innerText = product.name;
+            document.getElementById('modal-cat').innerText = product.cat;
+            document.getElementById('modal-price').innerText = `$${product.price.toFixed(2)}`;
+            document.getElementById('modal-qty').value = 1;
+            document.getElementById('modal-add-btn').onclick = () => {
+                addToCart(product.name, product.price, product.img, parseInt(document.getElementById('modal-qty').value));
+                closeProductModal();
+            };
+            document.getElementById('productModal').classList.add('modal-active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('modal-active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function updateModalQty(val) {
+            const input = document.getElementById('modal-qty');
+            let current = parseInt(input.value);
+            if(current + val >= 1) input.value = current + val;
+        }
+
+        function addToCart(name, price, img, qty = 1) {
+            const existing = cart.find(item => item.name === name);
+            if(existing) { existing.qty += qty; } else { cart.push({ name, price, img, qty }); }
+            updateCartUI();
+            showToast();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const totalLabel = document.getElementById('cart-total');
+            const countLabel = document.getElementById('cart-count');
+            let total = 0;
+            let itemCount = 0;
+
+            container.innerHTML = cart.map((item, idx) => {
+                total += (item.price * item.qty);
+                itemCount += item.qty;
+                return `
+                    <div class="flex gap-4 items-center">
+                        <img src="${item.img}" class="w-16 h-20 object-cover rounded-sm">
+                        <div class="flex-1">
+                            <h4 class="text-[10px] font-black uppercase tracking-tight">${item.name}</h4>
+                            <p class="text-[10px] text-gray-500">Qty: ${item.qty}</p>
+                            <p class="text-xs font-black text-red-600">$${(item.price * item.qty).toFixed(2)}</p>
+                            <button onclick="removeItem(${idx})" class="text-[9px] text-gray-400 underline uppercase font-bold">Remove</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            countLabel.innerText = itemCount;
+            totalLabel.innerText = `$${total.toFixed(2)}`;
+        }
+
+        function removeItem(idx) {
+            cart.splice(idx, 1);
+            updateCartUI();
+        }
+
+        function filterByCat(category) {
+            renderProducts(products.filter(p => p.cat === category), category);
+            document.getElementById('main-content-area').scrollIntoView({behavior: "smooth"});
+        }
+
+        function filterByBadge(badge) {
+            renderProducts(products.filter(p => p.badge === badge), badge);
+            document.getElementById('main-content-area').scrollIntoView({behavior: "smooth"});
+        }
+
+        function toggleCart(open) {
+            document.getElementById('cartSidebar').classList.toggle('sidebar-open', open);
+        }
+
+        function toggleAuthModal(show) {
+            const modal = document.getElementById('authModal');
+            show ? modal.classList.add('modal-active') : modal.classList.remove('modal-active');
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.transform = "translateY(0) translateX(-50%)";
+            if(window.innerWidth > 768) toast.style.transform = "translateY(0)";
+            setTimeout(() => {
+                toast.style.transform = "translateY(150px) translateX(-50%)";
+                if(window.innerWidth > 768) toast.style.transform = "translateY(150px)";
+            }, 3000);
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('productSearch').value.toLowerCase();
+            renderProducts(products.filter(p => p.name.toLowerCase().includes(query)), "Search Results");
+        }
+
+        renderProducts(products, "Featured Products");
+        function showOffers() {
+        // Hide Hero and Main Content
+        document.getElementById('hero-section').classList.add('hidden');
+        document.getElementById('main-content-area').classList.add('hidden');
+        
+        // Show Offers Screen
+        const offersScreen = document.getElementById('offers-screen');
+        offersScreen.classList.remove('hidden');
+        
+        // Filter products that have "Sale" or "Hot" badges
+        const saleProducts = products.filter(p => p.badge === 'Sale' || p.badge === 'Hot');
+        
+        // Render into the offers grid
+        const grid = document.getElementById('offers-grid');
+        grid.innerHTML = saleProducts.map(p => `
+            <div class="product-card group cursor-pointer" onclick="openProductModal('${p.name}')">
+                <div class="relative overflow-hidden bg-white aspect-[4/5] rounded-sm mb-4 shadow-sm border border-gray-100">
+                    <img src="${p.img}" class="w-full h-full object-cover">
+                    <span class="absolute top-2 left-2 md:top-4 md:left-4 badge bg-red-600 text-white">${p.badge}</span>
+                </div>
+                <div class="text-center md:text-left">
+                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1">${p.cat}</p>
+                    <h3 class="font-bold text-[12px] md:text-sm uppercase tracking-tight mb-1 line-clamp-1">${p.name}</h3>
+                    <div class="flex items-center gap-2">
+                        <p class="font-black text-red-600 text-sm md:text-base">$${p.price.toFixed(2)}</p>
+                        <p class="text-gray-300 line-through text-[10px]">$${(p.price * 1.3).toFixed(2)}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+
+
+function closeOffers() {
+    // Show everything back
+    const sectionsToShow = ['hero-section', 'main-content-area', 'about', 'category-section'];
+    sectionsToShow.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.remove('hidden');
+    });
+
+    // Bring back Nav Links
+    const navLinks = document.getElementById('main-nav-links');
+    if(navLinks) navLinks.classList.remove('lg:hidden');
+
+    document.getElementById('offers-screen').classList.add('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function scrollToAbout() {
+    // First ensure we're showing the main page (not offers page)
+    document.getElementById('hero-section').classList.remove('hidden');
+    document.getElementById('main-content-area').classList.remove('hidden');
+    document.getElementById('offers-screen').classList.add('hidden');
+    
+    // Find and scroll to About section
+    const aboutSection = document.querySelector('.py-16.md\\:py-24.bg-gradient-to-br');
+    if(aboutSection) {
+        aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+function showOffers() {
+    // 1. Hide everything else
+    const idsToHide = ['shop-page', 'hero-section', 'main-content-area', 'category-section', 'about'];
+    idsToHide.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+
+    // 2. Highlight 'Offers' in the Nav
+    document.getElementById('nav-offers').classList.add('text-red-600');
+
+    // 3. Show Offers Screen
+    document.getElementById('offers-screen').classList.remove('hidden');
+    
+    // (Your existing logic to render items in offers-grid goes here)
+    renderOffers(); 
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function homePage() {
+    // 1. Reveal the main shop sections
+    const idsToShow = ['shop-page', 'hero-section', 'main-content-area', 'category-section', 'about'];
+    idsToShow.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('hidden');
+    });
+
+    // 2. Remove highlight from Offers nav
+    document.getElementById('nav-offers').classList.remove('text-red-600');
+
+    // 3. Hide Offers Screen
+    document.getElementById('offers-screen').classList.add('hidden');
+}
+
+// Function to handle rendering (Make sure your products array is defined)
+function renderOffers() {
+    const saleItems = products.filter(p => p.badge === 'Sale' || p.badge === 'Hot');
+    const grid = document.getElementById('offers-grid');
+    if (!grid) return;
+
+    grid.innerHTML = saleItems.map(p => `
+        <div class="product-card group cursor-pointer" onclick="openProductModal('${p.name}')">
+            <div class="relative overflow-hidden bg-gray-50 aspect-[4/5] rounded-xl mb-4 shadow-sm">
+                <img src="${p.img}" class="w-full h-full object-cover">
+                <span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">${p.badge}</span>
+            </div>
+            <h3 class="font-bold text-xs uppercase mb-1">${p.name}</h3>
+            <p class="font-black text-red-600">$${p.price.toFixed(2)}</p>
+        </div>
+    `).join('');
+}
+    </script>
+</body>
+</html>
