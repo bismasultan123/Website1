@@ -242,6 +242,19 @@
             </div>
             <span class="text-[10px] font-bold uppercase tracking-widest text-blue-900">Sports</span>
         </div>
+        <div class="flex flex-col items-center gap-3 cursor-pointer group min-w-[100px]" onclick="filterByCat('Health')">
+    <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-50 transition border border-gray-100">
+        <i class="fa-solid fa-capsules text-xl md:text-2xl text-blue-900"></i>
+    </div>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-blue-900 text-center">Health & Nutrition</span>
+</div>
+
+<div class="flex flex-col items-center gap-3 cursor-pointer group min-w-[100px]" onclick="filterByCat('Groceries')">
+    <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-50 transition border border-gray-100">
+        <i class="fa-solid fa-basket-shopping text-xl md:text-2xl text-blue-900"></i>
+    </div>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-blue-900 text-center">Food & Groceries</span>
+</div>
     </div>
 </section>
 
@@ -520,7 +533,18 @@
             { name: "La Mer The Rejuvenating Night Cream 2 fl. oz/60ml", price: 15.99, cat: "Skincare", badge: "Best Seller", img: "images/image17.png" },
             { name: "Joola Ben Johns PERSEUS CFS 16mm Carbon Pickleball Paddle", price: 9.99, cat: "Pre-owned", badge: "Premium", img: "images/image15.png" },
             { name: "Whirlpool Ice and Water Refrigerator Filter 4", price: 29.99, cat: "Appliances", img: "images/image9.png", badge: "Premium" },
-            { name: "Tennis Equipment", price: 29.99, cat: "Sports", img: "images/image21.png", badge: "New" }
+            { name: "Tennis Equipment", price: 29.99, cat: "Sports", img: "images/image21.png", badge: "New" },
+            { name: "Great Lakes Wellness Collagen Peptides Powder for Skin, Hair, Nails, Joints & Digestion - Unflavored - 22 Servings", price: 44.99, cat: "Health", img: "images/skinn.jpg", badge: "New" },
+
+
+    // New Health & Nutrition Products
+    { name: "Berberine Supplement with Ceylon Cinnamon - Berberine Liquid Drops with Turmeric Curcumin, Ceylon Cinnamon, Bitter Melon, Berberine Phytosome for Digestion", price: 4.99, cat: "Health", img: "images/health.jpg", badge: "Top Rated" },
+ 
+
+    // New Food & Groceries Products
+    { name: "DAVID Jumbo Sunflower Seeds, Cinnamon Churro Flavor, 5.25 oz.", price: 10.50, cat: "Groceries", img:"images/ooooodddd.jpg", badge: "New" },
+    { name: "Celtic Sea Salt, Light Grey Mineral Sea Salt, 1 Pound Resealable Bag Unrefined Hydration, Hand-Harvested, Vital Minerals, Family Founded Since 1976", price: 22.99, cat: "Groceries", img: "images/ooodddd.jpg", badge: "Fresh" },
+    
         ];
 
         let cart = [];
